@@ -12,7 +12,14 @@ class UserRoleSeeder extends Seeder
      */
     public function run(): void
     {
-        Role::create(['name' => 'User', 'guard_name' => 'web']);
+        $user=Role::create(['name' => 'User', 'guard_name' => 'web']);
+
+        $user->givePermissionTo([
+            'dashboard',
+            'users.profile',
+            
+
+        ]);
     }
 }
 

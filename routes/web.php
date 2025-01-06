@@ -18,10 +18,14 @@ use Illuminate\Support\Facades\Artisan;
 Route::get('/', function () {
     return view('welcome');
 });
+
+//dahsboard
 Route::get('/home', function () {
     return redirect()->route('dashboard');
 });
 
+
+//clear cache
 Route::get('/clear', function() {
     Artisan::call('cache:clear');
     Artisan::call('config:clear');
@@ -31,11 +35,19 @@ Route::get('/clear', function() {
 
     return redirect()->back()->withSuccess('Cache cleared successfully.');
 })->name('clear');
+
+//route cache
 Route::get('/route', function() {
     Artisan::call('permission:create-permission-routes');
     return redirect()->back()->withSuccess('Cache cleared successfully.');
 })->name('route');
+
+
 Auth::routes();
+
+
+
+
 Route::group(['namespace' => 'App\Http\Controllers','middleware' => ['auth', 'permission']], function()
 {
     Route::get('/dashboard', [Con\HomeController::class, 'index'])->name('dashboard');
