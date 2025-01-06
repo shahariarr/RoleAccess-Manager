@@ -53,8 +53,7 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'type' => 'required|in:1,2,3'
+            'password' => ['required', 'string', 'min:6', 'confirmed'],
         ]);
     }
 
@@ -69,21 +68,9 @@ class RegisterController extends Controller
        $user= User::create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'type' => $data['type'],
             'password' => Hash::make($data['password']),
         ]);
-
-        if($data['type']==1){
-            $user->assignRole('Super Admin');
-        }
-        elseif($data['type']==2){
-            $user->assignRole('Shop Owner');
-        }
-        else{
-            $user->assignRole('Customer');
-        }
-
-
+         $user->assignRole('User');
          $store=Store::create([
             'name' => $data['name'],
             'slug' => Str::slug($data['name']),

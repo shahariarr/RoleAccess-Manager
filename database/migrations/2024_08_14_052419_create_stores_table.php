@@ -15,10 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('slug')->unique();
             $table->string('name');
-            $table->string('description')->nullable();
-            $table->string('address')->nullable();
-            $table->string('phone')->nullable();
-            $table->string('image')->nullable();
             $table->timestamps();
         });
     }

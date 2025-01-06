@@ -87,7 +87,6 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
         $input = $request->all();
-
         if(!empty($request->password)){
             $input['password'] = Hash::make($request->password);
         }else{
