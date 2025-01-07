@@ -12,6 +12,8 @@ use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\StoreUserRequest;
 
 use App\Http\Requests\UpdateUserRequest;
+use Illuminate\Http\Request;
+use Yajra\DataTables\DataTables;
 
 
 class UserController extends Controller
@@ -20,11 +22,42 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): View
+    public function index(Request $request)
     {
-        return view('users.index', [
-            'users' => User::orderBy('id')->paginate(15)
-        ]);
+        if ($request->ajax()) {
+            $data = User::all();
+
+            return DataTables::of($data)
+                    ->addIndexColumn()
+                    ->addColumn('action', function($row){
+                        $btn = '<div class="d-flex">';
+                        if (auth()->user()->can('show-user')) {
+                            $btn .= '<a href="'.route("users.show", $row['id']).'" class="btn btn-warning btn-sm mr-2"><i class="bi bi-eye"></i> Show</a>';
+                        }
+                        if (in_array('Super Admin', $row->getRoleNames()->toArray() ?? [])) {
+                            if (auth()->user()->hasRole('Super Admin')) {
+                                $btn .= '<a href="'.route("users.edit", $row['id']).'" class="btn btn-primary btn-sm mr-2"><i class="bi bi-pencil-square"></i> Edit</a>';
+                            }
+                        } else {
+                            if (auth()->user()->can('edit-user')) {
+                                $btn .= '<a href="'.route("users.edit", $row['id']).'" class="btn btn-primary btn-sm mr-2"><i class="bi bi-pencil-square"></i> Edit</a>';
+                            }
+                            if (auth()->user()->can('destroy-user') && auth()->user()->id != $row['id']) {
+                                $btn .= '<form action="'.route("users.destroy", $row['id']).'" method="POST" style="display:inline;">
+                                <input type="hidden" name="_token" value="'.csrf_token().'">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit" class="btn btn-danger btn-sm mr-2" onclick="return confirm(\'Do you want to delete this user?\');"><i class="bi bi-trash"></i> Delete</button>
+                                </form>';
+                            }
+                        }
+                        $btn .= '</div>';
+                        return $btn;
+                    })
+                    ->rawColumns(['action'])
+                    ->make(true);
+        }
+
+        return view('users.index');
     }
 
     /**
