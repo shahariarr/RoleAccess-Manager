@@ -23,6 +23,12 @@
   <link rel="stylesheet" href="{{ asset('backend/assets/css/style.css')}}">
   <link rel="stylesheet" href="{{ asset('backend/assets/css/components.css')}}">
 
+  <style>
+    body.sidebar-mini .main-sidebar:after {
+      background-color: #1a2035;
+    }
+  </style>
+
     @stack('styles')
 </head>
 
