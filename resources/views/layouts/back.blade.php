@@ -110,6 +110,12 @@
     -webkit-text-fill-color: transparent;
 }
 
+.btn-secondary, .btn-secondary.disabled {
+    background: linear-gradient(45deg, #FF512F , #DD2476);
+    border: none;
+    color: white;
+}
+
 
 
 
