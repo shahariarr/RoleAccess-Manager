@@ -116,6 +116,12 @@
     color: white;
 }
 
+.btn-active {
+    background: linear-gradient(45deg, #09203F  , #537895);
+    border: none;
+    color: white;
+  }
+
 
 
 

@@ -11,7 +11,7 @@
         <li class="dropdown {{ Route::is('dashboard')  ? 'active' : '' }}">
           <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>Dashboard</span></a>
           <ul class="dropdown-menu">
-            <li><a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a></li>
+            <li class="{{ Route::is('dashboard')  ? 'btn-active' : '' }}"><a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a></li>
           </ul>
         </li>
 
@@ -20,11 +20,11 @@
             <li class="dropdown {{Route::is('categories.*') ? 'active' : '' }}">
             <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-cubes"></i> <span>Category</span></a>
             <ul class="dropdown-menu">
-                @can('create-categorie')
+                {{-- @can('create-categorie')
                 <li class="{{ Route::is('categories.create')  ? 'active' : '' }}"><a class="nav-link" href="{{ route('categories.create') }}">Category Create</a></li>
-                @endcan
+                @endcan --}}
                 @can('index-categorie')
-                <li class="{{ Route::is('categories.index')  ? 'active' : '' }}"><a class="nav-link" href="{{ route('categories.index') }}">Category List</a></li>
+                <li class="{{ Route::is('categories.index')  ? 'btn-active' : '' }}"><a class="nav-link" href="{{ route('categories.index') }}">Category List</a></li>
                 @endcan
             </ul>
             </li>
@@ -35,11 +35,11 @@
             <li class="dropdown {{Route::is('products.*') ? 'active' : '' }}">
             <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-shopping-basket"></i> <span>Product</span></a>
             <ul class="dropdown-menu">
-                @can('create-categorie')
+                {{-- @can('create-categorie')
                 <li class="{{ Route::is('products.create')  ? 'active' : '' }}"><a class="nav-link" href="{{ route('products.create') }}">Product Create</a></li>
-                @endcan
+                @endcan --}}
                 @can('index-categorie')
-                <li class="{{ Route::is('products.index')  ? 'active' : '' }}"><a class="nav-link" href="{{ route('products.index') }}">Product List</a></li>
+                <li class="{{ Route::is('products.index')  ? 'btn-active' : '' }}"><a class="nav-link" href="{{ route('products.index') }}">Product List</a></li>
                 @endcan
             </ul>
             </li>
@@ -51,7 +51,7 @@
             <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-store"></i> <span>Store</span></a>
             <ul class="dropdown-menu">
                 @can('index-categorie')
-                <li class="{{ Route::is('stores.index')  ? 'active' : '' }}"><a class="nav-link" href="{{ route('stores.index') }}">Store List</a></li>
+                <li class="{{ Route::is('stores.index')  ? 'btn-active' : '' }}"><a class="nav-link" href="{{ route('stores.index') }}">Store List</a></li>
                 @endcan
             </ul>
             </li>
@@ -63,13 +63,13 @@
             <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="far fa-user"></i> <span>User</span></a>
             <ul class="dropdown-menu">
                 @can('index-user')
-                <li class="{{ Route::is('users.*')  ? 'active' : '' }}"><a class="nav-link" href="{{ route('users.index') }}">Users List</a></li>
+                <li class="{{ Route::is('users.*')  ? 'btn-active' : '' }}"><a class="nav-link" href="{{ route('users.index') }}">Users List</a></li>
                 @endcan
                 @can('index-role')
-                <li class="{{ Route::is('roles.*')  ? 'active' : '' }}"><a class="nav-link" href="{{ route('roles.index') }}">Roles List</a></li>
+                <li class="{{ Route::is('roles.*')  ? 'btn-active' : '' }}"><a class="nav-link" href="{{ route('roles.index') }}">Roles List</a></li>
                 @endcan
                 @can('index-permission')
-                <li class="{{ Route::is('permissions.*')  ? 'active' : '' }}"><a class="nav-link" href="{{ route('permissions.index') }}">Permissions List</a></li>
+                <li class="{{ Route::is('permissions.*')  ? 'btn-active' : '' }}"><a class="nav-link" href="{{ route('permissions.index') }}">Permissions List</a></li>
                 @endcan
             </ul>
             </li>
