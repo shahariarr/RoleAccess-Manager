@@ -27,6 +27,98 @@
     body.sidebar-mini .main-sidebar:after {
       background-color: #1a2035;
     }
+    .btn-gradient {
+    background: linear-gradient(45deg, #662D8C, #ED1E79);
+    border: none;
+    color: white;
+  }
+
+
+
+    .btn-primary, .btn-primary.disabled {
+      background: linear-gradient(45deg, #662D8C, #ED1E79);
+      border: none;
+      color: white;
+    }
+
+    .btn-danger, .btn-danger.disabled {
+      background: linear-gradient(45deg, #FF512F , #DD2476);
+      border: none;
+      color: white;
+    }
+
+    .btn-warning, .btn-warning.disabled {
+      background: linear-gradient(45deg, #D8B5FF  , #1EAE98);
+      border: none;
+      color: white;
+    }
+
+    .bg-primary {
+      background: linear-gradient(45deg, #11998E  , #38EF7D);
+      color: white;
+    }
+
+    .btn-success, .btn-success.disabled {
+      background: linear-gradient(45deg, #C33764  , #1D2671);
+      border: none;
+      color: white;
+    }
+
+    .section .section-title:before {
+    content: ' ';
+    border-radius: 5px;
+    height: 8px;
+    width: 30px;
+    background: linear-gradient(45deg, #FF512F , #DD2476);
+    display: inline-block;
+    float: left;
+    margin-top: 6px;
+    margin-right: 15px;
+}
+
+.section .section-header h1 {
+    margin-bottom: 0;
+    font-weight: 700;
+    display: inline-block;
+    font-size: 24px;
+    margin-top: 3px;
+    background: linear-gradient(45deg, rgb(188, 12, 241), rgb(212, 4, 4));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.page-item.active .page-link {
+    background: linear-gradient(45deg, #09203F  , #537895);
+    border-color: #6777ef;
+}
+
+.main-sidebar .sidebar-brand a {
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 700;
+    background: linear-gradient(45deg, rgb(188, 12, 241), rgb(212, 4, 4));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+
+}
+
+.main-sidebar .sidebar-menu li a {
+    background: -webkit-linear-gradient(#D8B5FF , #1EAE98);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+
+
+
+
+
+
+
+
+
   </style>
 
     @stack('styles')

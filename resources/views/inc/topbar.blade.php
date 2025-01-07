@@ -13,14 +13,14 @@
         </div> --}}
       </div>
     </form>
-    <a href="{{ route('clear') }}" class="btn btn-outline-danger text-white mr-1">Cache Clear</a>
-    <a href="{{ route('route') }}" class="btn btn-outline-danger text-white">Generate Route</a>
+    <a href="{{ route('clear') }}" class="btn btn-gradient text-white mr-1">Cache Clear</a>
+    <a href="{{ route('route') }}" class="btn btn-gradient text-white">Generate Route</a>
     <ul class="navbar-nav navbar-right">
         <li class="dropdown"><a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
-            <img alt="image" src="{{ asset( Auth::user()->store?->image ?? 'backend/assets/img/avatar/avatar-1.png') }}" class="rounded-circle mr-1">
+            <img alt="image" src="{{ asset( Auth::user()->store?->image ?? 'backend/assets/img/avatar/xyz.png') }}" class="rounded-circle mr-1">
             <div class="d-sm-none d-lg-inline-block">Hi, {{ Auth::user()->name }}</div></a>
             <div class="dropdown-menu dropdown-menu-right">
-              <div class="dropdown-title">Logged in 5 min ago</div>
+
               <a href="{{ route('users.profile') }}" class="dropdown-item has-icon">
                 <i class="far fa-user"></i> Profile
               </a>

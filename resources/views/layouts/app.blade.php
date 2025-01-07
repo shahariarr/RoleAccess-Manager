@@ -16,6 +16,20 @@
   <!-- Template CSS -->
   <link rel="stylesheet" href="{{ asset('backend/assets/css/style.css')}}">
   <link rel="stylesheet" href="{{ asset('backend/assets/css/components.css')}}">
+  <style>
+    .btn-gradient {
+      background: linear-gradient(45deg, #662D8C, #ED1E79);
+      border: none;
+      color: white;
+    }
+
+    .btn-primary, .btn-primary.disabled {
+      background: linear-gradient(45deg, #662D8C, #ED1E79);
+      border: none;
+      color: white;
+    }
+    
+  </style>
     @stack('styles')
 </head>
 
