@@ -261,7 +261,7 @@
 
                     // Set the image preview
                     if (data.data.image) {
-                        $('#preview').attr('src', "{{ asset('storage/category') }}/" + data.data.image);
+                        $('#preview').attr('src', "{{ asset('/') }}" + data.data.image);
                         $('.image-preview').show();
                     }
                 } else {
