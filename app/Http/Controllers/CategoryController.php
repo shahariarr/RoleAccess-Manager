@@ -26,7 +26,7 @@ class CategoryController extends Controller
                         return $btn;
                     })
                     ->addColumn('image', function($data) {
-                        return '<img src="'.asset('storage/category/'.$data->image).'" width="70px"/>';
+                        return '<img src="'.asset($data->image).'" width="70px"/>';
                     })
                     ->rawColumns(['action', 'image'])
                     ->make(true);
@@ -73,7 +73,7 @@ class CategoryController extends Controller
             // Store category
             $category = Category::create([
                 'name' => $request->name,
-                'slug'=>slug($request->name),
+                'slug' => slug($request->name),
                 'image' => $image_path,
                 'user_id' => auth()->user()->id
             ]);
@@ -88,59 +88,59 @@ class CategoryController extends Controller
      * Show the form for editing the specified resource.
      */
     public function edit($id)
-{
-    $category = Category::find($id);
-    if ($category) {
-        return response()->json(['status' => true, 'data' => $category]);
-    } else {
-        return response()->json(['status' => false, 'message' => 'Category not found']);
-    }
-}
-
-public function update(Request $request, $id)
-{
-    // Validate request
-    $validator = Validator::make($request->all(), [
-        'name' => 'required|string|max:255',
-        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-    ]);
-
-    if ($validator->fails()) {
-        return response()->json([
-            'status' => 'error',
-            'errors' => $validator->errors()
-        ], 422);
-    }
-
-    // Store image
-    try {
+    {
         $category = Category::find($id);
-        $path = 'storage/category';
-        if ($request->hasFile('image')) {
-            $old_image = $category->image;
-            if (file_exists(public_path($old_image))) {
-                unlink(public_path($old_image));
-            }
-            $image_name = auth()->user()->id . time() . '.' . $request->image->extension();
-            $request->image->move(public_path($path), $image_name);
-            $image_path = $path . '/' . $image_name;
+        if ($category) {
+            return response()->json(['status' => true, 'data' => $category]);
         } else {
-            $image_path = $category->image;
+            return response()->json(['status' => false, 'message' => 'Category not found']);
         }
+    }
 
-        // Update category
-        $category->update([
-            'name' => $request->name,
-            'slug' => slug($request->name),
-            'image' => $image_path,
-            'user_id' => auth()->user()->id
+    public function update(Request $request, $id)
+    {
+        // Validate request
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        return response()->json(['status' => true, 'message' => 'Category updated successfully']);
-    } catch (\Exception $e) {
-        return response()->json(['status' => false, 'message' => $e->getMessage()]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // Store image
+        try {
+            $category = Category::find($id);
+            $path = 'storage/category';
+            if ($request->hasFile('image')) {
+                $old_image = $category->image;
+                if (file_exists(public_path($old_image))) {
+                    unlink(public_path($old_image));
+                }
+                $image_name = auth()->user()->id . time() . '.' . $request->image->extension();
+                $request->image->move(public_path($path), $image_name);
+                $image_path = $path . '/' . $image_name;
+            } else {
+                $image_path = $category->image;
+            }
+
+            // Update category
+            $category->update([
+                'name' => $request->name,
+                'slug' => slug($request->name),
+                'image' => $image_path,
+                'user_id' => auth()->user()->id
+            ]);
+
+            return response()->json(['status' => true, 'message' => 'Category updated successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, 'message' => $e->getMessage()]);
+        }
     }
-}
 
     /**
      * Remove the specified resource from storage.
