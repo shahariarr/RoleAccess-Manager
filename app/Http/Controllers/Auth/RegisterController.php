@@ -71,11 +71,11 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
         ]);
          $user->assignRole('User');
-         $store=Store::create([
-            'name' => $data['name'],
-            'slug' => Str::slug($data['name']),
-        ]);
-         $user->store_id=$store->id;
+        //  $store=Store::create([
+        //     'name' => $data['name'],
+        //     'slug' => Str::slug($data['name']),
+        // ]);
+        //  $user->store_id=$store->id;
             $user->save();
         return $user;
     }
