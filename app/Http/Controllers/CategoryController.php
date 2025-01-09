@@ -28,7 +28,7 @@ class CategoryController extends Controller
                     ->addColumn('image', function($data) {
                         return '<img src="'.asset('storage/category/'.$data->image).'" width="70px"/>';
                     })
-                    ->rawColumns(['action','image'])
+                    ->rawColumns(['action', 'image'])
                     ->make(true);
         }
 

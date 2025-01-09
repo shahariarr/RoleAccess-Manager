@@ -86,76 +86,131 @@
         </div>
     </div>
 </div>
-@endpush
 @push('scripts')
-    <script type="text/javascript">
-        $(document).ready(function() {
+<script type="text/javascript">
+    $(document).ready(function() {
+        var table = $('#data-table').DataTable({
+            processing: true,
+            serverSide: true,
+            orderable: true,
+            ajax: "{{ route('categories.index') }}",
+            columns: [
+                { data: 'DT_RowIndex', name: 'DT_RowIndex' },
+                { data: 'name', name: 'name' },
+                { data: 'image', name: 'image', orderable: false, searchable: false },
+                { data: 'action', name: 'action', orderable: false, searchable: false }
+            ]
+        });
 
-            var table = $('#data-table').DataTable({
-                processing: true,
-                serverSide: true,
-                orderable: true,
-                ajax: "{{ route('categories.index') }}",
-                columns: [{
-                        data: 'DT_RowIndex',
-                        name: 'DT_RowIndex'
-                    },
-                    {
-                        data: 'name',
-                        name: 'name'
-                    },
-                    {
-                        data: 'image',
-                        name: 'image'
-                    },
-                    {
-                        data: 'action',
-                        name: 'action',
-                        orderable: false,
-                        searchable: false
-                    },
-                ]
-            });
+        $('#image').on('change', function() {
+            var file = this.files[0];
+            $("#image").next('.custom-file-label').html(file.name);
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                $('#preview').attr('src', e.target.result);
+                $('.image-preview').show();
+            }
+            reader.readAsDataURL(file);
+        });
 
-            $('#image').on('change', function() {
-                var file = this.files[0];
-                $("#image").next('.custom-file-label').html(file.name);
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    $('#preview').attr('src', e.target.result);
-                    $('.image-preview').show();
+        $('#modelId').on('hidden.bs.modal', function() {
+            resetForm();
+        });
+
+        $("#categoryForm").on('submit', function(e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+            var id = $('#categoryId').val();
+            var url = id ? "{{ url('/') }}" + '/categories/' + id : "{{ route('categories.store') }}";
+            var type = id ? "POST" : "POST";
+
+            if (id) {
+                formData.append('_method', 'PUT');
+            }
+
+            $.ajax({
+                type: type,
+                url: url,
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(data) {
+                    if (data.status) {
+                        iziToast.success({
+                            title: 'Success',
+                            timeout: 1500,
+                            message: data.message,
+                            position: 'topRight'
+                        });
+                        $('#modelId').modal('hide');
+                        table.draw();
+                        resetForm();
+                    } else {
+                        iziToast.error({
+                            title: 'Error',
+                            timeout: 1500,
+                            message: data.message,
+                            position: 'topRight'
+                        });
+                    }
+                },
+                error: function(err) {
+                    console.log(err.responseJSON);
+                    if (err.status === 422) {
+                        var errors = err.responseJSON.errors;
+                        $.each(errors, function(key, value) {
+                            iziToast.error({
+                                title: 'Error',
+                                timeout: 1500,
+                                message: value,
+                                position: 'topRight'
+                            });
+                        });
+                    } else {
+                        iziToast.error({
+                            title: 'Error',
+                            timeout: 1500,
+                            message: 'Something went wrong. Please try again later',
+                            position: 'topRight'
+                        });
+                    }
                 }
-                reader.readAsDataURL(file);
             });
+        });
 
-            $('#modelId').on('hidden.bs.modal', function() {
-                $('#categoryForm')[0].reset();
-                $('#preview').attr('src', '');
-                $('.image-preview').hide();
-                $('#modelId').find('.modal-title').text('Create Category');
-                $('#submit').text('Submit');
-                $('#categoryForm').attr('action', '{{ route('categories.store') }}');
-                $('#categoryForm').attr('method', 'POST');
-            });
+        function resetForm() {
+            $('#categoryForm')[0].reset();
+            $('#preview').attr('src', '');
+            $('.image-preview').hide();
+            $('#modelId').find('.modal-title').text('Create Category');
+            $('#submit').text('Submit');
+            $('#categoryForm').attr('action', '{{ route('categories.store') }}');
+            $('#categoryForm').attr('method', 'POST');
+            $('#categoryId').val('');
+            $("#image").next('.custom-file-label').html('Choose file');
+        }
+    });
 
-            $("#categoryForm").on('submit', function(e) {
-                e.preventDefault();
-                var formData = new FormData(this);
-                var id = $('#categoryId').val();
-                var url = id ? "{{ url('/') }}" + '/categories/' + id : "{{ route('categories.store') }}";
-                var type = id ? "POST" : "POST";
+    function deleteCategory(id) {
+        var token = $("meta[name='csrf-token']").attr("content");
+        var url = "{{ url('/') }}" + '/categories/' + id;
 
-                if (id) {
-                    formData.append('_method', 'PUT');
-                }
-
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this data!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((willDelete) => {
+            if (willDelete) {
                 $.ajax({
-                    type: type,
+                    type: "DELETE",
                     url: url,
-                    data: formData,
-                    contentType: false,
-                    processData: false,
-                    success: function(data) {
+                    data: {
+                        "_token": token,
+                    },
+                    success: function (data) {
                         if (data.status) {
                             iziToast.success({
                                 title: 'Success',
@@ -163,9 +218,7 @@
                                 message: data.message,
                                 position: 'topRight'
                             });
-                            $('#modelId').modal('hide');
-                            table.draw();
-                            $('#categoryForm')[0].reset();
+                            $('#data-table').DataTable().ajax.reload(); // Reload the DataTable
                         } else {
                             iziToast.error({
                                 title: 'Error',
@@ -175,116 +228,59 @@
                             });
                         }
                     },
-                    error: function(err) {
-                        console.log(err.responseJSON);
-                        if (err.status === 422) {
-                            var errors = err.responseJSON.errors;
-                            $.each(errors, function(key, value) {
-                                iziToast.error({
-                                    title: 'Error',
-                                    timeout: 1500,
-                                    message: value,
-                                    position: 'topRight'
-                                });
-                            });
-                        } else {
-                            iziToast.error({
-                                title: 'Error',
-                                timeout: 1500,
-                                message: 'Something went wrong. Please try again later',
-                                position: 'topRight'
-                            });
-                        }
-                    }
-                });
-            });
-
-        });
-
-        function deleteCategory(id) {
-            var token = $("meta[name='csrf-token']").attr("content");
-            var url = "{{ url('/') }}" + '/categories/' + id;
-
-            swal({
-                title: "Are you sure?",
-                text: "Once deleted, you will not be able to recover this data!",
-                icon: "warning",
-                buttons: true,
-                dangerMode: true,
-            })
-            .then((willDelete) => {
-                if (willDelete) {
-                    $.ajax({
-                        type: "DELETE",
-                        url: url,
-                        data: {
-                            "_token": token,
-                        },
-                        success: function (data) {
-                            if (data.status) {
-                                iziToast.success({
-                                    title: 'Success',
-                                    timeout: 1500,
-                                    message: data.message,
-                                    position: 'topRight'
-                                });
-                                $('#data-table').DataTable().ajax.reload(); // Reload the DataTable
-                            } else {
-                                iziToast.error({
-                                    title: 'Error',
-                                    timeout: 1500,
-                                    message: data.message,
-                                    position: 'topRight'
-                                });
-                            }
-                        },
-                        error: function (err) {
-                            iziToast.error({
-                                title: 'Error',
-                                timeout: 1500,
-                                message: 'Something went wrong. Please try again later',
-                                position: 'topRight'
-                            });
-                        }
-                    });
-                }
-            });
-        };
-
-        function editCategory(id) {
-            var url = "{{ url('/') }}" + '/categories/' + id + '/edit';
-
-            $.ajax({
-                type: "GET",
-                url: url,
-                success: function (data) {
-                    if (data.status) {
-                        // Populate the edit form with the category data
-                        $('#categoryId').val(data.data.id);
-                        $('#name').val(data.data.name);
-                        $('#modalTitle').text('Edit Category');
-                        $('#submit').text('Save changes');
-                        $('#categoryForm').attr('action', "{{ url('/') }}" + '/categories/' + data.data.id);
-                        $('#categoryForm').attr('method', 'POST');
-                        $('#modelId').modal('show');
-                    } else {
+                    error: function (err) {
                         iziToast.error({
                             title: 'Error',
                             timeout: 1500,
-                            message: 'Failed to fetch category data',
+                            message: 'Something went wrong. Please try again later',
                             position: 'topRight'
                         });
                     }
-                },
-                error: function (err) {
+                });
+            }
+        });
+    };
+
+    function editCategory(id) {
+        var url = "{{ url('/') }}" + '/categories/' + id + '/edit';
+
+        $.ajax({
+            type: "GET",
+            url: url,
+            success: function (data) {
+                if (data.status) {
+                    // Populate the edit form with the category data
+                    $('#categoryId').val(data.data.id);
+                    $('#name').val(data.data.name);
+                    $('#modalTitle').text('Edit Category');
+                    $('#submit').text('Save changes');
+                    $('#categoryForm').attr('action', "{{ url('/') }}" + '/categories/' + data.data.id);
+                    $('#categoryForm').attr('method', 'POST');
+                    $('#modelId').modal('show');
+
+                    // Set the image preview
+                    if (data.data.image) {
+                        $('#preview').attr('src', "{{ asset('storage/category') }}/" + data.data.image);
+                        $('.image-preview').show();
+                    }
+                } else {
                     iziToast.error({
                         title: 'Error',
                         timeout: 1500,
-                        message: 'Something went wrong. Please try again later',
+                        message: 'Failed to fetch category data',
                         position: 'topRight'
                     });
                 }
-            });
-        }
-    </script>
+            },
+            error: function (err) {
+                iziToast.error({
+                    title: 'Error',
+                    timeout: 1500,
+                    message: 'Something went wrong. Please try again later',
+                    position: 'topRight'
+                });
+            }
+        });
+    }
+</script>
 @endpush
