@@ -49,7 +49,6 @@
 
 @endsection
 @push('modals')
-@push('modals')
 <!-- Modal -->
 <div class="modal fade" id="modelId" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -87,7 +86,6 @@
         </div>
     </div>
 </div>
-@endpush
 @endpush
 @push('scripts')
     <script type="text/javascript">
@@ -137,6 +135,7 @@
                 $('#modelId').find('.modal-title').text('Create Category');
                 $('#submit').text('Submit');
                 $('#categoryForm').attr('action', '{{ route('categories.store') }}');
+                $('#categoryForm').attr('method', 'POST');
             });
 
             $("#categoryForm").on('submit', function(e) {
@@ -145,6 +144,10 @@
                 var id = $('#categoryId').val();
                 var url = id ? "{{ url('/') }}" + '/categories/' + id : "{{ route('categories.store') }}";
                 var type = id ? "POST" : "POST";
+
+                if (id) {
+                    formData.append('_method', 'PUT');
+                }
 
                 $.ajax({
                     type: type,
@@ -261,6 +264,8 @@
                         $('#name').val(data.data.name);
                         $('#modalTitle').text('Edit Category');
                         $('#submit').text('Save changes');
+                        $('#categoryForm').attr('action', "{{ url('/') }}" + '/categories/' + data.data.id);
+                        $('#categoryForm').attr('method', 'POST');
                         $('#modelId').modal('show');
                     } else {
                         iziToast.error({
