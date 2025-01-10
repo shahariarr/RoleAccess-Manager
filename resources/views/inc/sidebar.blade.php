@@ -74,5 +74,6 @@
             </ul>
             </li>
         @endcan
+      </ul>
     </aside>
 </div>

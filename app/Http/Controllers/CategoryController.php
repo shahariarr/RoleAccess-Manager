@@ -14,7 +14,15 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = Category::all();
+            if(auth()->user()->hasRole('Super Admin')) {
+                $data = Category::where('user_id', auth()->user()->id)->get();
+            } elseif(auth()->user()->hasRole('User')) {
+                $data = Category::where('user_id', auth()->user()->id)->get();
+            } elseif(auth()->user()->hasRole('Admin')) {
+                $data = Category::where('user_id', auth()->user()->id)->get();
+            } else {
+                $data=null;
+            }
 
             return datatables($data)
                     ->addIndexColumn()
