@@ -5,15 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\View\View;
 
-use Spatie\Permission\Models\Role;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Http\RedirectResponse;
-
-use App\Http\Requests\StoreUserRequest;
-
-use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
+use Spatie\Permission\Models\Role;
+
+use Illuminate\Support\Facades\Hash;
+
+use Illuminate\Http\RedirectResponse;
+use App\Http\Requests\StoreUserRequest;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\UpdateUserRequest;
 
 
 class UserController extends Controller
@@ -118,26 +119,39 @@ class UserController extends Controller
      * Update the specified resource in storage.
      */
     public function update(UpdateUserRequest $request, User $user): RedirectResponse
-    {
-        $input = $request->all();
-        if(!empty($request->password)){
-            $input['password'] = Hash::make($request->password);
-        }else{
-            $input = $request->except('password');
+{
+    $input = $request->all();
+    $path = 'images';
+
+    if ($request->hasFile('image')) {
+        $old_image = $user->image;
+        if ($old_image && file_exists(public_path('storage/' . $old_image))) {
+            unlink(public_path('storage/' . $old_image));
         }
-
-        $user->update($input);
-
-        $user->syncRoles($request->roles);
-
-        if(empty($request->from)){
-        return redirect()->route('users.index')
-                ->withSuccess('User is updated successfully.');
-        }else{
-            return redirect()->route('users.profile')
-                ->withSuccess('Profile is updated successfully.');
-        }
+        $image_name = auth()->user()->id . time() . '.' . $request->image->extension();
+        $request->image->move(public_path('storage/' . $path), $image_name);
+        $input['image'] = $path . '/' . $image_name;
+    } else {
+        $input['image'] = $user->image;
     }
+
+    if (!empty($request->password)) {
+        $input['password'] = Hash::make($request->password);
+    } else {
+        unset($input['password']);
+    }
+
+    $user->update($input);
+    $user->syncRoles($request->roles);
+
+    if (empty($request->from)) {
+        return redirect()->route('users.index')
+            ->withSuccess('User is updated successfully.');
+    } else {
+        return redirect()->route('users.profile')
+            ->withSuccess('Profile is updated successfully.');
+    }
+}
 
     /**
      * Remove the specified resource from storage.
