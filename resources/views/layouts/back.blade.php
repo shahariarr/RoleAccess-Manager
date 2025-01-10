@@ -123,6 +123,24 @@
   }
 
 
+.bg-danger {
+    background: linear-gradient(45deg, #FF512F , #DD2476);
+    color: white;
+
+}
+.bg-warning {
+    background: linear-gradient(45deg, #D8B5FF , #1EAE98);
+    color: white;
+
+}
+
+.bg-success {
+    background: linear-gradient(45deg, #C33764 , #1D2671);
+    color: white;
+
+}
+
+
 
 
 /* From Uiverse.io by boryanakrasteva */
