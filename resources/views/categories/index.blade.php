@@ -33,6 +33,7 @@
                                             <th>Name</th>
                                             <th>Image</th>
                                             <th>Status</th>
+                                            <th>Created By</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -110,6 +111,7 @@
                 { data: 'name', name: 'name' },
                 { data: 'image', name: 'image', orderable: false, searchable: false },
                 { data: 'status', name: 'status' },
+                { data: 'created_by', name: 'created_by' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
         });

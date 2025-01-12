@@ -15,11 +15,11 @@ class CategoryController extends Controller
     {
         if ($request->ajax()) {
             if (auth()->user()->hasRole('Super Admin')) {
-                $data = Category::all();
+                $data = Category::with('user')->get();
             } elseif (auth()->user()->hasRole('Admin')) {
-                $data = Category::where('user_id', auth()->user()->id)->get();
+                $data = Category::with('user')->where('user_id', auth()->user()->id)->get();
             } elseif (auth()->user()->hasRole('User')) {
-                $data = Category::where('user_id', auth()->user()->id)->get();
+                $data = Category::with('user')->where('user_id', auth()->user()->id)->get();
             } else {
                 $data = null;
             }
@@ -35,6 +35,9 @@ class CategoryController extends Controller
                     })
                     ->addColumn('image', function($data) {
                         return '<img src="'.asset($data->image).'" width="70px"/>';
+                    })
+                    ->addColumn('created_by', function($data) {
+                        return $data->user->name;
                     })
                     ->rawColumns(['action', 'image'])
                     ->make(true);
