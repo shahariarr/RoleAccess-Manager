@@ -39,7 +39,11 @@ class CategoryController extends Controller
                     ->addColumn('created_by', function($data) {
                         return $data->user->name;
                     })
-                    ->rawColumns(['action', 'image'])
+                    ->addColumn('status', function($data) {
+                        $badgeClass = $data->status == 'active' ? 'bg-primary' : 'bg-secondary';
+                        return '<span class="badge '.$badgeClass.'">'.ucfirst($data->status).'</span>';
+                    })
+                    ->rawColumns(['action', 'image', 'status'])
                     ->make(true);
         }
 
