@@ -83,13 +83,13 @@ Visit [http://localhost:8000](http://localhost:8000) to access the application.
 
 ### **Default Seeded Data**
 
-#### Admin Account:
-- **Email**: `admin@example.com`
-- **Password**: `password`
+#### Super Admin:
+- **Email**: `super@admin.com`
+- **Password**: `123456`
 
-#### User Account:
-- **Email**: `user@example.com`
-- **Password**: `password`
+#### Admin:
+- **Email**: `admin@admin.com`
+- **Password**: `123456`
 
 ---
 
