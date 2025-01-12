@@ -104,11 +104,6 @@
 
 }
 
-.main-sidebar .sidebar-menu li a {
-    background: -webkit-linear-gradient(#D8B5FF , #1EAE98);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
 
 .btn-secondary, .btn-secondary.disabled {
     background: linear-gradient(45deg, #FF512F , #DD2476);
