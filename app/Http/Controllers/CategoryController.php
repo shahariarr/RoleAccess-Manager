@@ -14,14 +14,14 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            if(auth()->user()->hasRole('Super Admin')) {
+            if (auth()->user()->hasRole('Super Admin')) {
+                $data = Category::all();
+            } elseif (auth()->user()->hasRole('Admin')) {
                 $data = Category::where('user_id', auth()->user()->id)->get();
-            } elseif(auth()->user()->hasRole('User')) {
-                $data = Category::where('user_id', auth()->user()->id)->get();
-            } elseif(auth()->user()->hasRole('Admin')) {
+            } elseif (auth()->user()->hasRole('User')) {
                 $data = Category::where('user_id', auth()->user()->id)->get();
             } else {
-                $data=null;
+                $data = null;
             }
 
             return datatables($data)
@@ -69,6 +69,9 @@ class CategoryController extends Controller
             ], 422);
         }
 
+        // Determine status based on user role
+        $status = auth()->user()->hasRole(['Admin', 'Super Admin']) ? 'active' : 'inactive';
+
         // Store image
         try {
             $path = 'storage/category';
@@ -83,7 +86,8 @@ class CategoryController extends Controller
                 'name' => $request->name,
                 'slug' => slug($request->name),
                 'image' => $image_path,
-                'user_id' => auth()->user()->id
+                'user_id' => auth()->user()->id,
+                'status' => $status
             ]);
 
             return response()->json(['status' => true, 'message' => 'Category created successfully']);
@@ -108,10 +112,16 @@ class CategoryController extends Controller
     public function update(Request $request, $id)
     {
         // Validate request
-        $validator = Validator::make($request->all(), [
+        $rules = [
             'name' => 'required|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
+        ];
+
+        if (auth()->user()->hasRole(['Admin', 'Super Admin'])) {
+            $rules['status'] = 'required|in:active,inactive';
+        }
+
+        $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
             return response()->json([
@@ -137,12 +147,18 @@ class CategoryController extends Controller
             }
 
             // Update category
-            $category->update([
+            $updateData = [
                 'name' => $request->name,
                 'slug' => slug($request->name),
                 'image' => $image_path,
-                'user_id' => auth()->user()->id
-            ]);
+                'user_id' => auth()->user()->id,
+            ];
+
+            if (auth()->user()->hasRole(['Admin', 'Super Admin'])) {
+                $updateData['status'] = $request->status;
+            }
+
+            $category->update($updateData);
 
             return response()->json(['status' => true, 'message' => 'Category updated successfully']);
         } catch (\Exception $e) {

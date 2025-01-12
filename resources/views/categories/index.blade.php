@@ -32,6 +32,7 @@
                                             <th>S#</th>
                                             <th>Name</th>
                                             <th>Image</th>
+                                            <th>Status</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -77,6 +78,15 @@
                             <img src="" alt="" id="preview" width="100%">
                         </div>
                     </div>
+                    @if(auth()->user()->hasRole(['Admin', 'Super Admin']))
+                        <div class="form-group">
+                            <label for="status">Status</label>
+                            <select class="form-control" name="status" id="status">
+                                <option value="active" selected>Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+                    @endif
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -99,6 +109,7 @@
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                 { data: 'name', name: 'name' },
                 { data: 'image', name: 'image', orderable: false, searchable: false },
+                { data: 'status', name: 'status' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ]
         });
@@ -253,6 +264,7 @@
                     // Populate the edit form with the category data
                     $('#categoryId').val(data.data.id);
                     $('#name').val(data.data.name);
+                    $('#status').val(data.data.status);
                     $('#modalTitle').text('Edit Category');
                     $('#submit').text('Save changes');
                     $('#categoryForm').attr('action', "{{ url('/') }}" + '/categories/' + data.data.id);
